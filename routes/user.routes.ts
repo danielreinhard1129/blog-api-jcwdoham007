@@ -1,0 +1,19 @@
+import express from "express";
+import {
+  createUserController,
+  deleteUserController,
+  getUserController,
+  getUsersController,
+  updateUserController,
+} from "../controllers/user.controller.js";
+import { createUserValidator } from "../validators/user.validator.js";
+
+const userRoutes = express.Router();
+
+userRoutes.get("/", getUsersController);
+userRoutes.get("/:id", getUserController);
+userRoutes.post("/", createUserValidator, createUserController);
+userRoutes.patch("/:id", updateUserController);
+userRoutes.delete("/:id", deleteUserController);
+
+export { userRoutes };
