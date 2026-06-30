@@ -66,13 +66,6 @@ export const createUserService = async (body: User) => {
     });
 
     // process 2
-    // await tx.address.create({
-    //   data: {
-    //     street: "Jl. Soekarno Hatta",
-    //     city: "Jakarta",
-    //     userId: newUser.id,
-    //   },
-    // });
   });
 
   return { message: "create user success" };
