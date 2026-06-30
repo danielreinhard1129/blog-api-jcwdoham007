@@ -23,7 +23,6 @@ export const getUsersService = async (query: GetUsersQuery) => {
 
   const users = await prisma.user.findMany({
     where: whereClause,
-    include: { addresses: true },
     omit: { password: true },
     skip: (page - 1) * take,
     take: take,
@@ -67,13 +66,13 @@ export const createUserService = async (body: User) => {
     });
 
     // process 2
-    await tx.address.create({
-      data: {
-        street: "Jl. Soekarno Hatta",
-        city: "Jakarta",
-        userId: newUser.id,
-      },
-    });
+    // await tx.address.create({
+    //   data: {
+    //     street: "Jl. Soekarno Hatta",
+    //     city: "Jakarta",
+    //     userId: newUser.id,
+    //   },
+    // });
   });
 
   return { message: "create user success" };
