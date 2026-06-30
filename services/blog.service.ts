@@ -1,5 +1,6 @@
 import { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
+import { ApiError } from "../utils/api-error.js";
 
 interface GetBlogsQuery {
   page: number;
@@ -36,4 +37,21 @@ export const getBlogsService = async (query: GetBlogsQuery) => {
       total: total,
     },
   };
+};
+
+export const getBlogBySlugService = async (slug: string) => {
+  const blog = await prisma.blog.findUnique({
+    where: { slug },
+    include: {
+      user: {
+        select: { name: true },
+      },
+    },
+  });
+
+  if (!blog) {
+    throw new ApiError("Blog not found!", 404);
+  }
+
+  return blog;
 };
