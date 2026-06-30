@@ -1,8 +1,9 @@
+import cors from "cors";
 import express from "express";
+import { authRoutes } from "./routes/auth.routes.js";
+import { blogRoutes } from "./routes/blog.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { globalError, notFoundError } from "./utils/errors.js";
-import { authRoutes } from "./routes/auth.routes.js";
-import cors from "cors";
 
 const PORT = 8000;
 
@@ -15,6 +16,7 @@ app.use(express.json()); // agar bisa menerima req.body
 // entry point
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/blogs", blogRoutes);
 
 // errors
 app.use(globalError);
