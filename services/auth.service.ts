@@ -1,12 +1,10 @@
-import { User } from "../generated/prisma/client.js";
-import { prisma } from "../lib/prisma.js";
-import { ApiError } from "../utils/api-error.js";
 import argon from "argon2";
 import jwt from "jsonwebtoken";
+import { prisma } from "../lib/prisma.js";
+import { ApiError } from "../utils/api-error.js";
+import { LoginSchema, RegisterSchema } from "../validators/auth.validator.js";
 
-export const registerService = async (
-  body: Pick<User, "name" | "email" | "password">,
-) => {
+export const registerService = async (body: RegisterSchema) => {
   // 1. cek dulu emailnya udah kepake atau belom
   const user = await prisma.user.findUnique({
     where: { email: body.email },
@@ -36,7 +34,7 @@ export const registerService = async (
   };
 };
 
-export const loginService = async (body: Pick<User, "email" | "password">) => {
+export const loginService = async (body: LoginSchema) => {
   // 1. cek dulu emailnya ada di db atau tidak
   const user = await prisma.user.findUnique({
     where: { email: body.email },
