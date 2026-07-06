@@ -1,25 +1,11 @@
 import { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
+import { PaginationQueryParams } from "../types/pagination.js";
 import { ApiError } from "../utils/api-error.js";
 import { slugify } from "../utils/slug.js";
+import { CreateBlogSchema } from "../validators/blog.validator.js";
 
-interface GetBlogsQuery {
-  page: number;
-  take: number;
-  sortOrder: string;
-  sortBy: string;
-  search: string;
-}
-
-interface CreateBlogBody {
-  title: string;
-  description: string;
-  category: string;
-  content: string;
-  thumbnail: string;
-}
-
-export const getBlogsService = async (query: GetBlogsQuery) => {
+export const getBlogsService = async (query: PaginationQueryParams) => {
   const { page, take, sortOrder, sortBy, search } = query;
 
   const whereClause: Prisma.BlogWhereInput = {};
@@ -66,7 +52,7 @@ export const getBlogBySlugService = async (slug: string) => {
 };
 
 export const createBlogService = async (
-  body: CreateBlogBody,
+  body: CreateBlogSchema,
   userId: number,
 ) => {
   const blog = await prisma.blog.findUnique({
