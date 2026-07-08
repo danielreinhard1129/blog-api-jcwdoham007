@@ -6,6 +6,7 @@ import {
   ForgotPasswordSchema,
   LoginSchema,
   RegisterSchema,
+  ResetPasswordSchema,
 } from "../validators/auth.validator.js";
 import { sendMail } from "../lib/mail.js";
 
@@ -113,4 +114,31 @@ export const forgotPasswordService = async (body: ForgotPasswordSchema) => {
 
   // 5. return success
   return { message: "Send email success" };
+};
+
+export const resetPasswordService = async (
+  body: ResetPasswordSchema,
+  userId: number,
+) => {
+  // 1. cara data user yang mau diganti passwordnya
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  // 2. kalo tidak ketemu throw error
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
+
+  // 3. kalo ketemu, hash password baru nya
+  const hashedPassword = await argon.hash(body.password);
+
+  // 4. update data usernya dengan password baru
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
+
+  // 5. return success
+  return { message: "Reset password success" };
 };
