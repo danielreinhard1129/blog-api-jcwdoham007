@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../utils/api-error.js";
 import jwt from "jsonwebtoken";
+import { Role } from "../generated/prisma/enums.js";
 
 export const verifyToken = (secretKey: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -21,5 +22,17 @@ export const verifyToken = (secretKey: string) => {
 
       return next(new ApiError("Token invalid", 401));
     }
+  };
+};
+
+export const verifyRole = (roles: Role[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const userRole = res.locals.user.role;
+
+    if (!userRole || !roles.includes(userRole)) {
+      throw new ApiError("You dont have access.", 403);
+    }
+
+    next();
   };
 };
