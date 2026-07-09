@@ -1,4 +1,5 @@
 import { Prisma } from "../generated/prisma/client.js";
+import { uploadImage } from "../lib/cloudinary.js";
 import { prisma } from "../lib/prisma.js";
 import { PaginationQueryParams } from "../types/pagination.js";
 import { ApiError } from "../utils/api-error.js";
@@ -54,6 +55,7 @@ export const getBlogBySlugService = async (slug: string) => {
 export const createBlogService = async (
   body: CreateBlogSchema,
   userId: number,
+  thumbnail: Express.Multer.File,
 ) => {
   const blog = await prisma.blog.findUnique({
     where: { title: body.title },
@@ -65,11 +67,14 @@ export const createBlogService = async (
 
   const slug = slugify(body.title);
 
+  const { secure_url } = await uploadImage(thumbnail);
+
   await prisma.blog.create({
     data: {
       ...body,
       slug: slug,
       userId: userId,
+      thumbnail: secure_url,
     },
   });
 

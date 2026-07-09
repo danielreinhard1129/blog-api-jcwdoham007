@@ -5,6 +5,7 @@ import {
   getBlogsService,
 } from "../services/blog.service.js";
 import { baseQuery } from "../utils/query.js";
+import { ApiError } from "../utils/api-error.js";
 
 export const getBlogsController = async (req: Request, res: Response) => {
   const query = baseQuery(req);
@@ -20,6 +21,11 @@ export const getBlogBySlugController = async (req: Request, res: Response) => {
 
 export const createBlogController = async (req: Request, res: Response) => {
   const userId = res.locals.user.id;
-  const result = await createBlogService(req.body, userId);
+
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  const thumbnail = files.thumbnail?.[0];
+  if (!thumbnail) throw new ApiError("Thumbnail is required", 400);
+
+  const result = await createBlogService(req.body, userId, thumbnail);
   res.status(200).send(result);
 };
