@@ -10,8 +10,6 @@ export const globalError = (
   const message = err.message || "Something went wrong!";
   const status = err.status || 500;
 
-  console.log(err);
-
   res.status(status).send({ message });
 };
 
