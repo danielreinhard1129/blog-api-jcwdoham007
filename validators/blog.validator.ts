@@ -5,7 +5,6 @@ export const createBlogSchema = z.object({
   description: z.string().min(1, "Description is required"),
   category: z.string().min(1, "Category is required"),
   content: z.string().min(1, "Content is required"),
-  thumbnail: z.string().min(1, "Thumbnail is required"),
 });
 
 export type CreateBlogSchema = z.infer<typeof createBlogSchema>;
