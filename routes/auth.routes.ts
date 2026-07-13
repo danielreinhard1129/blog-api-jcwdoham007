@@ -2,9 +2,12 @@ import express from "express";
 import {
   forgotPasswordController,
   loginController,
+  logoutController,
+  refreshController,
   registerController,
   resetPasswordController,
 } from "../controllers/auth.controller.js";
+import { verifyToken } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validation.middleware.js";
 import {
   forgotPasswordSchema,
@@ -12,7 +15,6 @@ import {
   registerSchema,
   resetPasswordSchema,
 } from "../validators/auth.validator.js";
-import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const authRoutes = express.Router();
 
@@ -29,5 +31,7 @@ authRoutes.post(
   validate(resetPasswordSchema),
   resetPasswordController,
 );
+authRoutes.post("/refresh", refreshController);
+authRoutes.post("/logout", logoutController);
 
 export { authRoutes };
