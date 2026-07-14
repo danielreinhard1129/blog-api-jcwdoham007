@@ -5,10 +5,13 @@ import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../utils/api-error.js";
 import {
   ForgotPasswordSchema,
+  GoogleSchema,
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
 } from "../validators/auth.validator.js";
+import axios from "axios";
+import { GoogleUserInfo } from "../types/google.js";
 
 export const registerService = async (body: RegisterSchema) => {
   // 1. cek dulu emailnya udah kepake atau belom
@@ -197,4 +200,54 @@ export const logoutService = async (refreshToken?: string) => {
   });
 
   return { message: "Logout success" };
+};
+
+export const googleService = async (body: GoogleSchema) => {
+  const response = await axios.get<GoogleUserInfo>(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    { headers: { Authorization: `Bearer ${body.accessToken}` } },
+  );
+
+  let user = await prisma.user.findUnique({
+    where: {
+      email: response.data.email,
+    },
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        name: response.data.name,
+        email: response.data.email,
+        password: "",
+        profilePic: response.data.picture,
+        role: "USER",
+      },
+    });
+  }
+
+  // 5. generate access token jwt
+  const payload = { id: user.id, role: user.role };
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, {
+    expiresIn: "15m",
+  });
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_REFRESH!, {
+    expiresIn: "3d",
+  });
+
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      userId: user.id,
+      expiredAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+    },
+  });
+
+  // 6. return login success
+  const { password, ...userWithoutPassword } = user; // remove property password
+  return {
+    user: userWithoutPassword,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  };
 };

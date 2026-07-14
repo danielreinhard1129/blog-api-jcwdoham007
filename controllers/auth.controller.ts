@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { cookieOptions } from "../config/cookie.js";
 import {
   forgotPasswordService,
+  googleService,
   loginService,
   logoutService,
   refreshService,
@@ -49,4 +50,13 @@ export const logoutController = async (req: Request, res: Response) => {
   res.clearCookie("refreshToken", cookieOptions);
 
   res.status(200).send(result);
+};
+
+export const googleController = async (req: Request, res: Response) => {
+  const result = await googleService(req.body);
+
+  res.cookie("accessToken", result.accessToken, cookieOptions);
+  res.cookie("refreshToken", result.refreshToken, cookieOptions);
+
+  res.status(200).send(result.user);
 };
