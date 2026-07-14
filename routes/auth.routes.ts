@@ -1,6 +1,7 @@
 import express from "express";
 import {
   forgotPasswordController,
+  googleController,
   loginController,
   logoutController,
   refreshController,
@@ -33,5 +34,6 @@ authRoutes.post(
 );
 authRoutes.post("/refresh", refreshController);
 authRoutes.post("/logout", logoutController);
+authRoutes.post("/google", googleController);
 
 export { authRoutes };
