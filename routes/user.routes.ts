@@ -4,6 +4,7 @@ import {
   deleteUserController,
   getUserController,
   getUsersController,
+  samplesController,
   updateUserController,
 } from "../controllers/user.controller.js";
 import { createUserValidator } from "../validators/user.validator.js";
@@ -17,6 +18,9 @@ userRoutes.get(
   verifyRole(["SUPER_ADMIN", "ADMIN"]),
   getUsersController,
 );
+
+userRoutes.get("/samples", samplesController);
+
 userRoutes.get("/:id", getUserController);
 userRoutes.post("/", createUserValidator, createUserController);
 userRoutes.patch("/:id", updateUserController);

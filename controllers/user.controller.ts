@@ -4,6 +4,7 @@ import {
   deleteUserService,
   getUserService,
   getUsersService,
+  samplesService,
   updateUserService,
 } from "../services/user.service.js";
 import { baseQuery } from "../utils/query.js";
@@ -34,5 +35,10 @@ export const updateUserController = async (req: Request, res: Response) => {
 export const deleteUserController = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const result = await deleteUserService(id);
+  res.status(200).send(result);
+};
+
+export const samplesController = async (req: Request, res: Response) => {
+  const result = await samplesService();
   res.status(200).send(result);
 };
