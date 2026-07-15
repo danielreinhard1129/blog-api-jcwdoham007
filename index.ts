@@ -5,6 +5,7 @@ import { corsOptions } from "./config/cors.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { blogRoutes } from "./routes/blog.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
+import { reminderCron } from "./scripts/reminder.js";
 import { globalError, notFoundError } from "./utils/errors.js";
 
 const PORT = 8000;
@@ -24,6 +25,9 @@ app.use("/blogs", blogRoutes);
 // errors
 app.use(globalError);
 app.use(notFoundError);
+
+// cron
+reminderCron();
 
 app.listen(PORT, () => {
   console.log(`Server running on port : ${PORT}`);
