@@ -1,5 +1,6 @@
 import { Prisma, User } from "../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
+import { getValues, setValue } from "../lib/redis.js";
 import { ApiError } from "../utils/api-error.js";
 
 interface GetUsersQuery {
@@ -97,4 +98,23 @@ export const deleteUserService = async (id: number) => {
   });
 
   return { message: "delete user success" };
+};
+
+export const samplesService = async () => {
+  const cacheUsers = await getValues("samples");
+
+  if (cacheUsers) {
+    console.log("INI DATA DARI REDIS");
+    return JSON.parse(cacheUsers);
+  }
+
+  const users = await prisma.user.findMany({
+    omit: { password: true },
+  });
+
+  await setValue("samples", JSON.stringify(users), 15);
+
+  console.log("INI DATA DARI POSTGRES");
+
+  return users;
 };
