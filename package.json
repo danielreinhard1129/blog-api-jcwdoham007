@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "dev": "tsx --watch index.ts",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy"
+    "vercel-build": "npm run build && prisma generate && prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
