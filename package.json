@@ -5,9 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "copy-files": "node -e \"require('fs').cpSync('templates', 'dist/templates', { recursive: true });\"",
+    "build": "tsc && npm run copy-files",
     "start": "node dist/index.js",
-    "dev": "tsx --watch index.ts"
+    "dev": "tsx --watch index.ts",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
