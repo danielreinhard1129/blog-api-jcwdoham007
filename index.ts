@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import { corsOptions } from "./config/cors.js";
+import { loggerHttp } from "./lib/logger-http.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { blogRoutes } from "./routes/blog.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
@@ -16,6 +17,7 @@ const app = express();
 app.use(cors(corsOptions));
 app.use(express.json()); // agar bisa menerima req.body
 app.use(cookieParser());
+app.use(loggerHttp);
 
 // entry point
 app.use("/users", userRoutes);
