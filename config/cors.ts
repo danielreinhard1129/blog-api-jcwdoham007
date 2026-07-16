@@ -1,6 +1,9 @@
 import "dotenv/config";
 import { CorsOptions } from "cors";
 
+console.log(process.env.BASE_URL_FE);
+
+
 export const corsOptions: CorsOptions = {
   origin: [
     "http://localhost:5173",
