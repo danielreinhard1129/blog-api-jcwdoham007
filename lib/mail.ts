@@ -1,3 +1,4 @@
+import "dotenv/config";
 import fs from "fs/promises";
 import handlebars from "handlebars";
 import path, { dirname } from "node:path";
