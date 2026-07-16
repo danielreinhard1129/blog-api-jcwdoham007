@@ -31,6 +31,7 @@ model User {
 
   blogs         Blog[]
   refreshTokens RefreshToken[]
+  transactions  Transaction[]
 
   @@map("users") // rename table di database
 }
@@ -63,4 +64,41 @@ model RefreshToken {
   user User @relation(fields: [userId], references: [id])
 
   @@map("refresh_tokens")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Int
+  stock     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions Transaction[]
+
+  @@map("products")
+}
+
+model Transaction {
+  id        Int               @id @default(autoincrement())
+  userId    Int
+  productId Int
+  qty       Int
+  price     Int
+  status    TransactionStatus @default(WAITING_FOR_PAYMENT)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("transactions")
+}
+
+enum TransactionStatus {
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_CONFIRMATION
+  PAID
+  REJECT
+  EXPIRED
 }
