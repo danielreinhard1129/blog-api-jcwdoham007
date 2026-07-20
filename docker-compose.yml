@@ -16,3 +16,23 @@ services:
     restart: always
     ports:
       - 6379:6379
+
+  db_testing:
+    image: postgres:18
+    container_name: postgres_testing_container
+    restart: always
+    volumes: 
+      - ./docker/postgres:/var/lib/postgresql/18/docker
+    ports:
+      - 6544:5432
+    environment:
+      - POSTGRES_PASSWORD=admin
+
+  mail:
+    image: mailhog/mailhog
+    platform: linux/amd64
+    container_name: mailhog_container
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
