@@ -38,7 +38,7 @@ export const registerService = async (body: RegisterSchema) => {
   });
 
   // 5. send welcome email
-  sendMail({
+  await sendMail({
     to: body.email,
     subject: `Welcome to My Blog App`,
     templateName: "welcome.hbs",
@@ -117,7 +117,7 @@ export const forgotPasswordService = async (body: ForgotPasswordSchema) => {
   });
 
   // 4. kirim email reset password + token
-  sendMail({
+  await sendMail({
     to: body.email,
     subject: "Reset Password",
     templateName: "reset-password.hbs",

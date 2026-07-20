@@ -27,3 +27,12 @@ services:
       - 6544:5432
     environment:
       - POSTGRES_PASSWORD=admin
+
+  mail:
+    image: mailhog/mailhog
+    platform: linux/amd64
+    container_name: mailhog_container
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025

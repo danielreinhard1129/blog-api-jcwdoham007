@@ -5,13 +5,23 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createTransport } from "nodemailer";
 
-const transporter = createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
+const isTestEnv = process.env.NODE_ENV === "test";
+
+const transporter = createTransport(
+  isTestEnv
+    ? {
+        host: "localhost",
+        port: 1025,
+        secure: false,
+      }
+    : {
+        service: "gmail",
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      },
+);
 
 export const sendMail = async ({
   to,
@@ -33,6 +43,7 @@ export const sendMail = async ({
   const html = handlebars.compile(templateSource)(context);
 
   await transporter.sendMail({
+    from: process.env.MAIL_USER,
     to: to,
     subject: subject,
     html: html,
